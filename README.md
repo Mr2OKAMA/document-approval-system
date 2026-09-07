@@ -9,6 +9,8 @@
 🔗 **[Notion データベースを開く](https://www.notion.so/3d458091301a804fb7d3efa3a3ba09b9)**
 
 > **注意**: Notion ワークスペースへのアクセス権限が必要です。権限がない場合は管理者に申し込んでください。
+>
+> 運用上は `.env.local` の `NOTION_DATABASE_ID` を正本として管理し、必要に応じて `https://www.notion.so/<NOTION_DATABASE_IDからハイフンを除去した値>` を参照してください。
 
 詳細な設計情報は [`docs/NOTION_DB_DESIGN.md`](docs/NOTION_DB_DESIGN.md) を参照してください。
 
@@ -67,15 +69,20 @@ npm run dev
 
 `http://localhost:3000` でアプリケーションにアクセスできます。
 
+ブラウザで開く（HTML画面）:
+- [ダッシュボード](http://localhost:3000/)
+- [新規申請フォーム](http://localhost:3000/applications)
+- [申請一覧](http://localhost:3000/applications/list)
+
 > Notion 未設定時でも、UI と API の確認ができるようにメモリ上のサンプルデータで動作します。
 
 ## 主な画面・API
 
 ### 画面
-- `/` : ダッシュボード
-- `/applications` : 新規申請フォーム
-- `/applications/list` : 申請一覧
-- `/applications/[id]` : 申請詳細
+- [`/`](http://localhost:3000/) : ダッシュボード
+- [`/applications`](http://localhost:3000/applications) : 新規申請フォーム
+- [`/applications/list`](http://localhost:3000/applications/list) : 申請一覧
+- `/applications/[id]` : 申請詳細（動的ルート）
 
 ### API エンドポイント
 - `GET/POST /api/applications` : 申請一覧取得 / 新規作成
