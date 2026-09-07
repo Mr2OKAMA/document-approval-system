@@ -1,3 +1,5 @@
+'use client';
+
 import { ApplicationList } from '@/components/ApplicationList';
 
 export default function ApplicationsListPage() {

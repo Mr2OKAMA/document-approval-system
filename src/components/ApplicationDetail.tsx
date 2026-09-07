@@ -101,6 +101,24 @@ export function ApplicationDetail({ id }: { id: string }) {
     return nextStatusMap[application.status];
   }, [application]);
 
+  const buildCommentPayload = useCallback(
+    (newComment: string) => {
+      const trimmed = newComment.trim();
+      const existing = application?.comment?.trim() ?? '';
+
+      if (!trimmed) {
+        return existing;
+      }
+
+      if (!existing) {
+        return trimmed;
+      }
+
+      return `${existing}\n${trimmed}`;
+    },
+    [application],
+  );
+
   if (isLoading) {
     return (
       <div className="flex items-center gap-3 rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
@@ -199,7 +217,7 @@ export function ApplicationDetail({ id }: { id: string }) {
               key={status}
               type="button"
               disabled={isUpdating}
-              onClick={() => void updateApplication(status, comment.trim() || application.comment || '')}
+              onClick={() => void updateApplication(status, buildCommentPayload(comment))}
               className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {status}に更新
@@ -209,7 +227,7 @@ export function ApplicationDetail({ id }: { id: string }) {
           <button
             type="button"
             disabled={isUpdating || !comment.trim()}
-            onClick={() => void updateApplication(application.status, comment.trim())}
+            onClick={() => void updateApplication(application.status, buildCommentPayload(comment))}
             className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
           >
             コメントを追加
