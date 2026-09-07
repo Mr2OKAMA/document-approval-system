@@ -83,6 +83,7 @@ npm run dev
 - [`/applications`](http://localhost:3000/applications) : 新規申請フォーム
 - [`/applications/list`](http://localhost:3000/applications/list) : 申請一覧
 - `/applications/[id]` : 申請詳細（動的ルート）
+- https://mr2okama.github.io/document-approval-system/
 
 ### API エンドポイント
 - `GET/POST /api/applications` : 申請一覧取得 / 新規作成
