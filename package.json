@@ -1,0 +1,37 @@
+{
+  "name": "document-approval-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "社内向けの書類申請・承認・管理WEBアプリ。GitHub、Notion、Microsoft Teamsを連携。",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --ext .js,.ts,.tsx",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://localhost:26831/Mr2OKAMA/document-approval-system"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@notionhq/client": "^5.26.0",
+    "axios": "^1.20.0",
+    "next": "^16.3.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "@types/react": "^18.3.31",
+    "autoprefixer": "^10.5.5",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.4",
+    "postcss": "^8.5.28",
+    "prettier": "^3.9.6",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^5.9.3"
+  }
+}
