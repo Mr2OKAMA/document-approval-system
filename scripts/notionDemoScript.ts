@@ -1,4 +1,7 @@
-import { Client } from "@notionhq/client";
+/// <reference types="node" />
+
+import { Client, isFullDataSource } from "@notionhq/client";
+import type { DataSourceObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 
 const notion = new Client({
   auth: process.env.NOTION_API_KEY,
@@ -14,8 +17,22 @@ const DATABASE_ID = process.env.NOTION_DATABASE_ID || "";
  * - サンプルデータの作成
  */
 
-interface PropertyType {
-  [key: string]: any;
+type PropertyType = NonNullable<Parameters<Client["pages"]["create"]>[0]["properties"]>;
+
+function getPlainText(items: Array<{ plain_text: string }>) {
+  return items.map((item) => item.plain_text).join("");
+}
+
+async function getDataSource(): Promise<DataSourceObjectResponse> {
+  const dataSource = await notion.dataSources.retrieve({
+    data_source_id: DATABASE_ID,
+  });
+
+  if (!isFullDataSource(dataSource)) {
+    throw new Error("Notion データソースの詳細を取得できませんでした");
+  }
+
+  return dataSource;
 }
 
 /**
@@ -67,12 +84,10 @@ async function step1_GetDatabaseInfo() {
   console.log("📋 [ステップ 1] Notion データベース情報を取得中...\n");
 
   try {
-    const database = await notion.databases.retrieve({
-      database_id: DATABASE_ID,
-    });
+    const database = await getDataSource();
 
     console.log("✅ データベース情報:");
-    console.log(`  タイトル: ${database.title}`);
+    console.log(`  タイトル: ${getPlainText(database.title)}`);
     console.log(`  作成日時: ${database.created_time}`);
     console.log(`  最終更新: ${database.last_edited_time}`);
     console.log("");
@@ -89,9 +104,7 @@ async function step2_DisplayProperties() {
   console.log("📊 [ステップ 2] 既存プロパティを確認中...\n");
 
   try {
-    const database = await notion.databases.retrieve({
-      database_id: DATABASE_ID,
-    });
+    const database = await getDataSource();
 
     const properties = database.properties;
     const propertyNames = Object.keys(properties);
@@ -128,9 +141,7 @@ async function step3_CheckAndCreateProperties() {
   );
 
   try {
-    const database = await notion.databases.retrieve({
-      database_id: DATABASE_ID,
-    });
+    const database = await getDataSource();
 
     const properties = database.properties;
 
@@ -207,9 +218,7 @@ async function step4_CreateSampleData() {
   );
 
   try {
-    const database = await notion.databases.retrieve({
-      database_id: DATABASE_ID,
-    });
+    const database = await getDataSource();
 
     const properties = database.properties;
 
@@ -320,7 +329,7 @@ async function step4_CreateSampleData() {
           };
         }
 
-        const response = await notion.pages.create({
+        await notion.pages.create({
           parent: {
             database_id: DATABASE_ID,
           },
@@ -329,7 +338,7 @@ async function step4_CreateSampleData() {
 
         console.log(`  ✅ "${sampleData.title}" を作成しました`);
         successCount++;
-      } catch (error) {
+      } catch {
         console.log(
           `  ⚠️  "${sampleData.title}" の作成をスキップしました（プロパティ不足）`
         );
