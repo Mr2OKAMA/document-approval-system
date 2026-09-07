@@ -1,3 +1,5 @@
+'use client';
+
 import { ApplicationForm } from '@/components/ApplicationForm';
 
 export default function ApplicationsPage() {
