@@ -46,7 +46,7 @@ export function ApplicationForm() {
       }
 
       setFormData(initialState);
-      router.push(`/applications/${result.data.id}`);
+      router.push('/applications/list');
       router.refresh();
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : '申請に失敗しました。');
