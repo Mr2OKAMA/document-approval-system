@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "setup:notion": "ts-node scripts/setupNotionDatabase.ts",
+    "setup:notion:complete": "ts-node scripts/setupNotionDatabaseComplete.ts",
     "demo:notion": "ts-node scripts/notionDemoScript.ts"
   },
   "repository": {
