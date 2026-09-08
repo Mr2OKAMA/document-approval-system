@@ -24,7 +24,7 @@
 
 > セキュリティ上の理由で、依存パッケージは既知脆弱性のある Next.js 14 系ではなく、安全な現行版を採用しています。実装構成自体は要件どおり設計されています。
 
-## セットアップ
+## セットアップ（ローカル開発）
 
 ### 1. 依存パッケージのインストール
 
@@ -38,7 +38,7 @@ npm install
 cp .env.example .env.local
 ```
 
-`.env.local` に以下の値を設定してください：
+`.env.local` に以下の値を設定してください（Vercel 本番環境でも同名の環境変数を設定します）：
 
 ```env
 NOTION_API_KEY=ntn_xxxxxxxxxxxxx  # Notion API Key
@@ -67,7 +67,7 @@ npm run setup:notion
 npm run dev
 ```
 
-`http://localhost:3000` でアプリケーションにアクセスできます。
+`http://localhost:3000` でアプリケーションにアクセスできます（ローカル開発専用）。
 
 ブラウザで開く（HTML画面）:
 - [ダッシュボード](http://localhost:3000/)
@@ -76,19 +76,48 @@ npm run dev
 
 > Notion 未設定時でも、UI と API の確認ができるようにメモリ上のサンプルデータで動作します。
 
-## 主な画面・API
+## 🌐 本番サイト（API利用可）
 
-### 画面
-- [`/`](http://localhost:3000/) : ダッシュボード
-- [`/applications`](http://localhost:3000/applications) : 新規申請フォーム
-- [`/applications/list`](http://localhost:3000/applications/list) : 申請一覧
-- `/applications/[id]` : 申請詳細（動的ルート）
-- https://mr2okama.github.io/document-approval-system/
+本番利用時は、Vercel にデプロイした URL を使用してください。
+
+- **Production URL（例）**: `https://<your-vercel-project>.vercel.app`
+
+### UI ルート
+- `/` : ダッシュボード
+- `/applications` : 新規申請フォーム
+- `/applications/list` : 申請一覧
+- `/applications/[id]` : 申請詳細
 
 ### API エンドポイント
 - `GET/POST /api/applications` : 申請一覧取得 / 新規作成
 - `GET/PATCH/DELETE /api/applications/[id]` : 詳細取得 / ステータス更新 / 削除
 - `GET/POST /api/notion/sync` : Notion 同期状態確認
+
+> GitHub Pages（`https://mr2okama.github.io/document-approval-system/`）は静的ホスティングのため、`/api/*` ルートは実行できません。API を利用する場合は Vercel の本番 URL を使用してください。
+
+## 🚀 Vercel デプロイ手順（推奨）
+
+1. Vercel ダッシュボードで `Mr2OKAMA/document-approval-system` リポジトリを Import
+2. Framework Preset は Next.js（自動検出のデフォルト設定）を使用
+3. Environment Variables を設定
+   - `NOTION_API_KEY`
+   - `NOTION_DATABASE_ID`
+   - `NOTION_PAGE_SIZE`（任意）
+   - `MICROSOFT_TEAMS_WEBHOOK_URL`（任意）
+   - `NEXT_PUBLIC_APP_NAME`（任意）
+4. Deploy を実行
+5. 発行された本番 URL で UI と API を確認
+   - UI: `/`, `/applications`, `/applications/list`, `/applications/[id]`
+   - API: `GET/POST /api/applications`, `GET/PATCH/DELETE /api/applications/[id]`, `GET/POST /api/notion/sync`
+
+### Vercel CLI（任意）
+
+```bash
+npm i -g vercel
+vercel login
+vercel
+vercel --prod
+```
 
 ## 開発コマンド
 
@@ -143,7 +172,7 @@ npm run setup:notion
 ### 設定手順
 
 1. Microsoft Teams で Webhook を作成
-2. `.env.local` に `MICROSOFT_TEAMS_WEBHOOK_URL` を設定
+2. `MICROSOFT_TEAMS_WEBHOOK_URL` を設定（ローカル開発は `.env.local`、本番は Vercel の Environment Variables）
 3. Power Automate でフロー設定（別途ドキュメント参照）
 
 ## トラブルシューティング
@@ -154,7 +183,7 @@ npm run setup:notion
 ❌ NOTION_API_KEY または NOTION_DATABASE_ID が設定されていません
 ```
 
-**解決方法**: `.env.local` に正しい値が設定されているか確認してください。
+**解決方法**: ローカル開発は `.env.local`、本番環境は Vercel の Environment Variables に正しい値が設定されているか確認してください。
 
 ### セットアップスクリプトの実行エラー
 
