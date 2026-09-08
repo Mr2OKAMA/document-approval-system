@@ -162,9 +162,9 @@ export async function listApplications(): Promise<Application[]> {
     );
   }
 
-  const response = await withRetry<Awaited<ReturnType<Client['dataSources']['query']>>>(() =>
-    notion.dataSources.query({
-      data_source_id: notionConfig.databaseId,
+  const response = await withRetry<Awaited<ReturnType<Client['databases']['query']>>>(() =>
+    notion.databases.query({
+      database_id: notionConfig.databaseId,
       page_size: notionConfig.pageSize,
       sorts: [{ property: notionPropertyNames.appliedAt, direction: 'descending' }],
     }),

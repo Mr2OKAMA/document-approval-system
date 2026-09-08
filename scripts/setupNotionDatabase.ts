@@ -1,7 +1,7 @@
 /// <reference types="node" />
 
-import { Client, isFullDataSource } from "@notionhq/client";
-import type { DataSourceObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import { Client, isFullDatabase } from "@notionhq/client";
+import type { DatabaseObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 
 const notion = new Client({
   auth: process.env.NOTION_API_KEY,
@@ -17,16 +17,16 @@ function getPlainText(items: Array<{ plain_text: string }>) {
   return items.map((item) => item.plain_text).join("");
 }
 
-async function getDataSource(): Promise<DataSourceObjectResponse> {
-  const dataSource = await notion.dataSources.retrieve({
-    data_source_id: DATABASE_ID,
+async function getDatabase(): Promise<DatabaseObjectResponse> {
+  const database = await notion.databases.retrieve({
+    database_id: DATABASE_ID,
   });
 
-  if (!isFullDataSource(dataSource)) {
-    throw new Error("Notion データソースの詳細を取得できませんでした");
+  if (!isFullDatabase(database)) {
+    throw new Error("Notion データベースの詳細を取得できませんでした");
   }
 
-  return dataSource;
+  return database;
 }
 
 /**
@@ -44,7 +44,7 @@ async function setupNotionDatabase() {
     console.log("📋 Notion データベースを取得中...");
 
     // データベース情報を取得
-    const database = await getDataSource();
+    const database = await getDatabase();
 
     console.log(`✅ データベース取得成功: ${getPlainText(database.title)}`);
     console.log("\n📊 現在のプロパティ:");

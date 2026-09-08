@@ -1,12 +1,12 @@
 /// <reference types="node" />
 
-import { Client, isFullDataSource, isFullPageOrDataSource } from '@notionhq/client';
+import { Client, isFullDatabase } from '@notionhq/client';
 import type {
-  DataSourceObjectResponse,
-  UpdateDataSourceParameters,
+  DatabaseObjectResponse,
+  UpdateDatabaseParameters,
 } from '@notionhq/client/build/src/api-endpoints';
 
-type DataSourcePropertiesUpdate = NonNullable<UpdateDataSourceParameters['properties']>;
+type DatabasePropertiesUpdate = NonNullable<UpdateDatabaseParameters['properties']>;
 type PageProperties = NonNullable<Parameters<Client['pages']['create']>[0]['properties']>;
 type SelectColor = 'blue' | 'green' | 'orange' | 'gray' | 'red' | 'yellow';
 
@@ -90,7 +90,7 @@ const REQUIRED_PROPERTY_DEFINITIONS = {
     type: 'rich_text',
     rich_text: {},
   },
-} satisfies DataSourcePropertiesUpdate;
+} satisfies DatabasePropertiesUpdate;
 
 const SELECT_OPTION_DEFINITIONS: Record<'DocumentType' | 'Status', SelectOptionDefinition[]> = {
   DocumentType: [
@@ -191,25 +191,25 @@ function getPlainTextFromRichText(items: unknown): string {
     .join('');
 }
 
-async function getDataSource(): Promise<DataSourceObjectResponse> {
-  const response = await notion.dataSources.retrieve({
-    data_source_id: DATABASE_ID,
+async function getDatabase(): Promise<DatabaseObjectResponse> {
+  const response = await notion.databases.retrieve({
+    database_id: DATABASE_ID,
   });
 
-  if (!isFullDataSource(response)) {
-    throw new Error('Notion データソースの詳細を取得できませんでした。');
+  if (!isFullDatabase(response)) {
+    throw new Error('Notion データベースの詳細を取得できませんでした。');
   }
 
   return response;
 }
 
-async function updateDataSourceProperties(properties: DataSourcePropertiesUpdate) {
+async function updateDatabaseProperties(properties: DatabasePropertiesUpdate) {
   if (Object.keys(properties).length === 0) {
     return;
   }
 
-  await notion.dataSources.update({
-    data_source_id: DATABASE_ID,
+  await notion.databases.update({
+    database_id: DATABASE_ID,
     properties,
   });
 }
@@ -217,13 +217,13 @@ async function updateDataSourceProperties(properties: DataSourcePropertiesUpdate
 async function setupProperties() {
   console.log('✅ [ステップ 1] プロパティをセットアップ中...');
 
-  const dataSource = await getDataSource();
-  const propertiesToCreate: DataSourcePropertiesUpdate = {};
+  const database = await getDatabase();
+  const propertiesToCreate: DatabasePropertiesUpdate = {};
 
   for (const [propertyName, propertyDefinition] of Object.entries(
     REQUIRED_PROPERTY_DEFINITIONS,
   )) {
-    const existingProperty = dataSource.properties[propertyName];
+    const existingProperty = database.properties[propertyName];
 
     if (!existingProperty) {
       propertiesToCreate[propertyName] = propertyDefinition;
@@ -241,7 +241,7 @@ async function setupProperties() {
     console.log(`  ✓ ${propertyName} プロパティ：既に存在`);
   }
 
-  await updateDataSourceProperties(propertiesToCreate);
+  await updateDatabaseProperties(propertiesToCreate);
 }
 
 function buildMergedSelectOptions(
@@ -270,13 +270,13 @@ function buildMergedSelectOptions(
 async function setupSelectOptions() {
   console.log('\n✅ [ステップ 2] Select オプションを設定中...');
 
-  const dataSource = await getDataSource();
-  const propertiesToUpdate: DataSourcePropertiesUpdate = {};
+  const database = await getDatabase();
+  const propertiesToUpdate: DatabasePropertiesUpdate = {};
 
   for (const [propertyName, options] of Object.entries(SELECT_OPTION_DEFINITIONS) as Array<
     [keyof typeof SELECT_OPTION_DEFINITIONS, SelectOptionDefinition[]]
   >) {
-    const property = dataSource.properties[propertyName];
+    const property = database.properties[propertyName];
 
     if (!property) {
       console.log(`  ⚠️ ${propertyName} オプション設定：プロパティが存在しないためスキップ`);
@@ -302,7 +302,7 @@ async function setupSelectOptions() {
     console.log(`  ✓ ${propertyName} オプション設定：完了`);
   }
 
-  await updateDataSourceProperties(propertiesToUpdate);
+  await updateDatabaseProperties(propertiesToUpdate);
 }
 
 function toRichText(content?: string) {
@@ -351,15 +351,15 @@ function buildDemoPageProperties(application: DemoApplication): PageProperties {
 }
 
 async function getExistingDemoTitles() {
-  const response = await notion.dataSources.query({
-    data_source_id: DATABASE_ID,
+  const response = await notion.databases.query({
+    database_id: DATABASE_ID,
     page_size: 100,
   });
 
   const titles = new Set<string>();
 
   for (const result of response.results) {
-    if (!isFullPageOrDataSource(result) || !('properties' in result)) {
+    if (!result || typeof result !== 'object' || !('properties' in result)) {
       continue;
     }
 
@@ -391,7 +391,7 @@ async function insertDemoData() {
 
     await notion.pages.create({
       parent: {
-        data_source_id: DATABASE_ID,
+        database_id: DATABASE_ID,
       },
       properties: buildDemoPageProperties(application),
     });
@@ -405,12 +405,12 @@ async function insertDemoData() {
 }
 
 async function displaySummary(createdCount: number) {
-  const dataSource = await getDataSource();
+  const database = await getDatabase();
   const requiredPropertyCount = Object.keys(REQUIRED_PROPERTY_DEFINITIONS).filter(
-    (name) => Boolean(dataSource.properties[name]),
+    (name) => Boolean(database.properties[name]),
   ).length;
   const notionUrl =
-    dataSource.url || `https://www.notion.so/${DATABASE_ID.replace(/-/g, '')}`;
+    database.url || `https://www.notion.so/${DATABASE_ID.replace(/-/g, '')}`;
 
   console.log('\n✨ セットアップが完了しました！\n');
   console.log('📊 Notion データベースの状態:');
