@@ -1,7 +1,7 @@
 /// <reference types="node" />
 
-import { Client, isFullDataSource } from "@notionhq/client";
-import type { DataSourceObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import { Client, isFullDatabase } from "@notionhq/client";
+import type { DatabaseObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 
 const notion = new Client({
   auth: process.env.NOTION_API_KEY,
@@ -23,16 +23,16 @@ function getPlainText(items: Array<{ plain_text: string }>) {
   return items.map((item) => item.plain_text).join("");
 }
 
-async function getDataSource(): Promise<DataSourceObjectResponse> {
-  const dataSource = await notion.dataSources.retrieve({
-    data_source_id: DATABASE_ID,
+async function getDatabase(): Promise<DatabaseObjectResponse> {
+  const database = await notion.databases.retrieve({
+    database_id: DATABASE_ID,
   });
 
-  if (!isFullDataSource(dataSource)) {
-    throw new Error("Notion データソースの詳細を取得できませんでした");
+  if (!isFullDatabase(database)) {
+    throw new Error("Notion データベースの詳細を取得できませんでした");
   }
 
-  return dataSource;
+  return database;
 }
 
 /**
@@ -84,7 +84,7 @@ async function step1_GetDatabaseInfo() {
   console.log("📋 [ステップ 1] Notion データベース情報を取得中...\n");
 
   try {
-    const database = await getDataSource();
+    const database = await getDatabase();
 
     console.log("✅ データベース情報:");
     console.log(`  タイトル: ${getPlainText(database.title)}`);
@@ -104,7 +104,7 @@ async function step2_DisplayProperties() {
   console.log("📊 [ステップ 2] 既存プロパティを確認中...\n");
 
   try {
-    const database = await getDataSource();
+    const database = await getDatabase();
 
     const properties = database.properties;
     const propertyNames = Object.keys(properties);
@@ -141,7 +141,7 @@ async function step3_CheckAndCreateProperties() {
   );
 
   try {
-    const database = await getDataSource();
+    const database = await getDatabase();
 
     const properties = database.properties;
 
@@ -218,7 +218,7 @@ async function step4_CreateSampleData() {
   );
 
   try {
-    const database = await getDataSource();
+    const database = await getDatabase();
 
     const properties = database.properties;
 
