@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block body %}
+<h2>文書の申請(新規・改訂)</h2>
+<p>既存の文書番号を入力すると、次の版として申請されます。</p>
+<form method="post" action="/submit" enctype="multipart/form-data"><input type="hidden" name="csrf" value="{{ csrf }}">
+<label>文書番号</label><input type="text" name="doc_no" list="docs" required>
+<datalist id="docs">{% for d in docs %}<option value="{{ d.doc_no }}">{{ d.title }}</option>{% endfor %}</datalist>
+<label>名称(既存文書は登録済みの名称が維持されます)</label><input type="text" name="title" required>
+<label>改訂内容</label><textarea name="change_summary" rows="3" required></textarea>
+<label>改訂理由(必須)</label><textarea name="change_reason" rows="3" required></textarea>
+<label>適用開始日</label><input type="date" name="effective_date" value="{{ today }}" required>
+<label>PDFファイル</label><input type="file" name="file" accept="application/pdf" required>
+<p><button>申請する</button></p></form>{% endblock %}

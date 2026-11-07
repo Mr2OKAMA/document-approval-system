@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% block body %}
+<h2>アカウント管理</h2>
+<table><tr><th>ID</th><th>氏名</th><th>役割</th><th>状態</th><th>操作</th></tr>
+{% for u in rows %}<tr><td>{{ u.login_id }}</td><td>{{ u.name }}</td><td>{{ roles[u.role] }}</td>
+<td>{{ '有効' if u.active else '無効' }}</td><td>
+<form method="post" action="/users/{{ u.id }}/toggle" style="display:inline"><input type="hidden" name="csrf" value="{{ csrf }}"><button>{{ '無効化' if u.active else '有効化' }}</button></form>
+<form method="post" action="/users/{{ u.id }}/reset" style="display:inline"><input type="hidden" name="csrf" value="{{ csrf }}">
+<input type="password" name="password" placeholder="新パスワード" minlength="8" required><button>再設定</button></form></td></tr>{% endfor %}</table>
+<h3>アカウント作成</h3>
+<form method="post" action="/users"><input type="hidden" name="csrf" value="{{ csrf }}">
+<label>ID</label><input type="text" name="login_id" required>
+<label>氏名</label><input type="text" name="name" required>
+<label>役割</label><select name="role">{% for k,v in roles.items() %}<option value="{{ k }}">{{ v }}</option>{% endfor %}</select>
+<label>初期パスワード(8文字以上)</label><input type="password" name="password" minlength="8" required>
+<p><button>作成</button></p></form>
+<p>※管理者は文書を承認できません(承認は「承認者」役割のみ)。申請者と承認者は別アカウントにしてください。</p>{% endblock %}

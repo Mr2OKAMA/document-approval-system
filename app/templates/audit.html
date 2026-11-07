@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block body %}
+<h2>操作ログ(直近500件)</h2>
+<p>ログの連鎖検証:{% if chain_ok %}<span class="ok">正常</span>{% else %}<span class="ng">改ざんの疑いあり</span>{% endif %}</p>
+<table><tr><th>日時</th><th>操作者</th><th>操作</th><th>対象</th><th>詳細</th></tr>
+{% for r in rows %}<tr><td>{{ r.ts }}</td><td>{{ r.actor }}</td><td>{{ r.action }}</td><td>{{ r.target }}</td><td>{{ r.detail }}</td></tr>{% endfor %}</table>{% endblock %}

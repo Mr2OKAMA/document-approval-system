@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block body %}
+<h2>適用中の文書(承認済み最新版)</h2>
+{% if pending %}<p><a href="/approvals">承認待ちが {{ pending }} 件あります</a></p>{% endif %}
+<table><tr><th>文書番号</th><th>名称</th><th>版</th><th>適用開始日</th><th>承認日</th><th></th></tr>
+{% for d in docs %}<tr><td><a href="/documents/{{ d.doc_no }}">{{ d.doc_no }}</a></td><td>{{ d.title }}</td>
+<td>Rev.{{ d.rev_no }}</td><td>{{ d.effective_date }}</td><td>{{ d.decided_at }}</td>
+<td><a href="/revisions/{{ d.rev_id }}/file" target="_blank">PDFを開く</a></td></tr>
+{% else %}<tr><td colspan="6">承認済みの文書はまだありません</td></tr>{% endfor %}</table>{% endblock %}

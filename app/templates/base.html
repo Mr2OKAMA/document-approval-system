@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><title>文書管理システム</title>
+<style>
+body{font-family:sans-serif;margin:0;color:#222}
+header{background:#1f4e79;color:#fff;padding:8px 16px;display:flex;gap:16px;align-items:center}
+header a{color:#fff;text-decoration:none} header form{margin:0 0 0 auto;display:inline}
+main{padding:16px;max-width:1000px;margin:auto}
+table{border-collapse:collapse;width:100%} th,td{border:1px solid #ccc;padding:6px;text-align:left;vertical-align:top}
+th{background:#f0f0f0} .msg{background:#fff3cd;padding:8px;margin-bottom:12px}
+label{display:block;margin:8px 0 2px} input[type=text],input[type=password],input[type=date],textarea,select{width:100%;max-width:480px;padding:4px}
+.ok{color:#080}.ng{color:#c00;font-weight:bold}
+</style></head><body>
+{% if user %}<header><strong>文書管理</strong>
+<a href="/">文書一覧</a>
+{% if user.role in ('admin','author') %}<a href="/submit">新規申請</a>{% endif %}
+{% if user.role in ('admin','approver') %}<a href="/approvals">承認待ち</a>{% endif %}
+{% if user.role=='admin' %}<a href="/users">アカウント</a><a href="/audit">操作ログ</a>{% endif %}
+<a href="/password">パスワード変更</a>
+<form method="post" action="/logout">{{ user.name }}({{ roles[user.role] }})
+<input type="hidden" name="csrf" value="{{ csrf }}"><button>ログアウト</button></form></header>{% endif %}
+<main>{% if msg %}<div class="msg">{{ msg }}</div>{% endif %}{% block body %}{% endblock %}</main>
+</body></html>

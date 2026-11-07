@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block body %}
+<h2>{{ doc.doc_no }} {{ doc.title }}</h2>
+<h3>改訂履歴</h3>
+<table><tr><th>版</th><th>状態</th><th>改訂内容</th><th>改訂理由</th><th>適用開始日</th><th>申請</th><th>承認/差戻し</th><th></th></tr>
+{% for r in revs %}<tr><td>Rev.{{ r.rev_no }}</td><td>{{ r.status }}</td><td>{{ r.change_summary }}</td><td>{{ r.change_reason }}</td>
+<td>{{ r.effective_date }}</td><td>{{ r.submitter }}<br>{{ r.submitted_at }}</td>
+<td>{% if r.decided_at %}{{ r.decider }}<br>{{ r.decided_at }}<br>{{ r.decision_comment }}{% endif %}</td>
+<td><a href="/revisions/{{ r.id }}/file" target="_blank">PDF</a></td></tr>{% endfor %}</table>
+{% if user.role in ('admin','author') %}<p><a href="/submit">改訂を申請する</a></p>{% endif %}{% endblock %}
