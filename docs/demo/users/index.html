@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>文書管理システム</title><link rel="stylesheet" href="../static/style.css"></head><body><div style="background:#fff3cd;border-bottom:1px solid #e0c36a;padding:8px 16px;font-size:13px">これは見た目確認用の<b>静的デモ</b>です(ダミーデータ・操作は動作しません)。</div>
+
+<div class="layout"><nav class="side">
+<div class="brand">文書管理<small>作業手順書・版管理</small></div>
+<a href="../index.html" class="">ホーム</a>
+<a href="../documents/index.html" class="">文書一覧</a>
+<a href="../tasks/index.html" class="">担当タスク</a>
+<a href="../acks/index.html" class="">周知確認</a>
+<a href="../submit/index.html" class="">新規申請</a>
+<div class="sep">管理</div>
+<a href="../equipment/index.html" class="">設備・保護具</a>
+<a href="#" class="">監査出力</a>
+<a href="../checks/index.html" class="">整合性チェック</a>
+<a href="index.html" class="on">アカウント</a><a href="../audit/index.html" class="">操作ログ</a>
+<div class="me">管理者 山田<br><span style="opacity:.7">管理者</span><br>
+<a href="#" style="padding:6px 0;border:0;display:inline">パスワード変更</a>
+<form method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><button>ログアウト</button></form></div>
+</nav><div class="content">
+<main>
+<h2>アカウント管理</h2>
+<table><tr><th>ID</th><th>氏名</th><th>役割</th><th>状態</th><th>操作</th></tr>
+<tr><td>admin</td><td>管理者 山田</td>
+<td><form class="inline" method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><select name="role"><option value="admin" selected>管理者</option><option value="author" >申請者</option><option value="reviewer" >確認者</option><option value="approver" >承認者</option><option value="viewer" >閲覧者</option></select><button>変更</button></form></td>
+<td>有効</td><td>
+<form class="inline" method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><button>無効化</button></form>
+<form class="inline" method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><button>ロック解除</button></form>
+<form class="inline" method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><input type="password" name="password" placeholder="新パスワード" minlength="8" required><button>再設定</button></form></td></tr><tr><td>sato</td><td>申請者 佐藤</td>
+<td><form class="inline" method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><select name="role"><option value="admin" >管理者</option><option value="author" selected>申請者</option><option value="reviewer" >確認者</option><option value="approver" >承認者</option><option value="viewer" >閲覧者</option></select><button>変更</button></form></td>
+<td>有効</td><td>
+<form class="inline" method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><button>無効化</button></form>
+<form class="inline" method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><button>ロック解除</button></form>
+<form class="inline" method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><input type="password" name="password" placeholder="新パスワード" minlength="8" required><button>再設定</button></form></td></tr><tr><td>suzuki</td><td>確認者 鈴木</td>
+<td><form class="inline" method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><select name="role"><option value="admin" >管理者</option><option value="author" >申請者</option><option value="reviewer" selected>確認者</option><option value="approver" >承認者</option><option value="viewer" >閲覧者</option></select><button>変更</button></form></td>
+<td>有効</td><td>
+<form class="inline" method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><button>無効化</button></form>
+<form class="inline" method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><button>ロック解除</button></form>
+<form class="inline" method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><input type="password" name="password" placeholder="新パスワード" minlength="8" required><button>再設定</button></form></td></tr><tr><td>tanaka</td><td>承認者 田中</td>
+<td><form class="inline" method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><select name="role"><option value="admin" >管理者</option><option value="author" >申請者</option><option value="reviewer" >確認者</option><option value="approver" selected>承認者</option><option value="viewer" >閲覧者</option></select><button>変更</button></form></td>
+<td>有効</td><td>
+<form class="inline" method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><button>無効化</button></form>
+<form class="inline" method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><button>ロック解除</button></form>
+<form class="inline" method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><input type="password" name="password" placeholder="新パスワード" minlength="8" required><button>再設定</button></form></td></tr><tr><td>ito</td><td>閲覧者 伊藤</td>
+<td><form class="inline" method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><select name="role"><option value="admin" >管理者</option><option value="author" >申請者</option><option value="reviewer" >確認者</option><option value="approver" >承認者</option><option value="viewer" selected>閲覧者</option></select><button>変更</button></form></td>
+<td>有効</td><td>
+<form class="inline" method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><button>無効化</button></form>
+<form class="inline" method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><button>ロック解除</button></form>
+<form class="inline" method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><input type="password" name="password" placeholder="新パスワード" minlength="8" required><button>再設定</button></form></td></tr></table>
+<h3>アカウント作成</h3>
+<form method="post" action="#" onsubmit="return false" class="box"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315">
+<label>ID</label><input type="text" name="login_id" required><label>氏名</label><input type="text" name="name" required>
+<label>役割</label><select name="role"><option value="admin">管理者</option><option value="author">申請者</option><option value="reviewer">確認者</option><option value="approver">承認者</option><option value="viewer">閲覧者</option></select>
+<label>初期パスワード(8文字以上・初回ログイン時に変更が必要)</label><input type="password" name="password" minlength="8" required>
+<p><button>作成</button></p></form>
+<p class="muted">申請(申請者)・確認(確認者)・承認(承認者)は別の人が行います。管理者は承認できません。共有アカウントは作らないでください。</p></main>
+</div></div>
+</body></html>

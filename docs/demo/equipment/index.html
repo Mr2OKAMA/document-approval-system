@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>文書管理システム</title><link rel="stylesheet" href="../static/style.css"></head><body><div style="background:#fff3cd;border-bottom:1px solid #e0c36a;padding:8px 16px;font-size:13px">これは見た目確認用の<b>静的デモ</b>です(ダミーデータ・操作は動作しません)。</div>
+
+<div class="layout"><nav class="side">
+<div class="brand">文書管理<small>作業手順書・版管理</small></div>
+<a href="../index.html" class="">ホーム</a>
+<a href="../documents/index.html" class="">文書一覧</a>
+<a href="../tasks/index.html" class="">担当タスク</a>
+<a href="../acks/index.html" class="">周知確認</a>
+<a href="../submit/index.html" class="">新規申請</a>
+<div class="sep">管理</div>
+<a href="index.html" class="on">設備・保護具</a>
+<a href="#" class="">監査出力</a>
+<a href="../checks/index.html" class="">整合性チェック</a>
+<a href="../users/index.html" class="">アカウント</a><a href="../audit/index.html" class="">操作ログ</a>
+<div class="me">管理者 山田<br><span style="opacity:.7">管理者</span><br>
+<a href="#" style="padding:6px 0;border:0;display:inline">パスワード変更</a>
+<form method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><button>ログアウト</button></form></div>
+</nav><div class="content">
+<main>
+<h2>設備・保護具台帳(酸欠計・墜落制止用器具など)</h2>
+<table><tr><th>名称</th><th>型式/製造番号</th><th>使用開始日</th><th>校正期限</th><th>関連手順書</th><th>校正履歴(直近5件)</th><th>操作</th></tr>
+<tr ><td>フルハーネス型墜落制止用器具</td><td>FH-20<br></td><td>2024-06-01</td>
+<td>未記録 <span class=""></span></td>
+<td></td>
+<td></td>
+<td><form method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315">
+<input type="date" name="done_on" value="2026-11-07" max="2026-11-07" required><select name="result"><option>合格</option><option>不合格</option></select><input type="text" name="note" placeholder="備考"><button>校正を記録</button></form>
+<form method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><button>使用停止</button></form></td></tr>
+<tr ><td>酸素濃度計</td><td>OX-100<br>A12345</td><td>2023-04-01</td>
+<td>2026-12-02 <span class="warn">間近</span></td>
+<td><a href="../documents/SOP-001/index.html">SOP-001</a><br></td>
+<td>2025-12-02 合格(次回 2026-12-02)<br></td>
+<td><form method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315">
+<input type="date" name="done_on" value="2026-11-07" max="2026-11-07" required><select name="result"><option>合格</option><option>不合格</option></select><input type="text" name="note" placeholder="備考"><button>校正を記録</button></form>
+<form method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><button>使用停止</button></form></td></tr>
+</table>
+<h3>設備の登録</h3>
+<form method="post" action="#" onsubmit="return false" class="box"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315">
+<label>名称</label><input type="text" name="name" required><label>型式</label><input type="text" name="model"><label>製造番号</label><input type="text" name="serial_no">
+<label>使用開始日(購入・導入記録に基づく実際の日付)</label><input type="date" name="in_use_since" required>
+<label>校正周期(月)</label><input type="number" name="calibration_cycle_months" value="12" min="1" max="120"><label>備考</label><input type="text" name="note">
+<p><button>登録</button></p></form></main>
+</div></div>
+</body></html>

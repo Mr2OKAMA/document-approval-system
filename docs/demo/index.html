@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>文書管理システム</title><link rel="stylesheet" href="static/style.css"></head><body><div style="background:#fff3cd;border-bottom:1px solid #e0c36a;padding:8px 16px;font-size:13px">これは見た目確認用の<b>静的デモ</b>です(ダミーデータ・操作は動作しません)。</div>
+
+<div class="layout"><nav class="side">
+<div class="brand">文書管理<small>作業手順書・版管理</small></div>
+<a href="index.html" class="on">ホーム</a>
+<a href="documents/index.html" class="">文書一覧</a>
+<a href="tasks/index.html" class="">担当タスク</a>
+<a href="acks/index.html" class="">周知確認</a>
+<a href="submit/index.html" class="">新規申請</a>
+<div class="sep">管理</div>
+<a href="equipment/index.html" class="">設備・保護具</a>
+<a href="#" class="">監査出力</a>
+<a href="checks/index.html" class="">整合性チェック</a>
+<a href="users/index.html" class="">アカウント</a><a href="audit/index.html" class="">操作ログ</a>
+<div class="me">管理者 山田<br><span style="opacity:.7">管理者</span><br>
+<a href="#" style="padding:6px 0;border:0;display:inline">パスワード変更</a>
+<form method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><button>ログアウト</button></form></div>
+</nav><div class="content">
+<main>
+<h2>ホーム</h2>
+<div class="cards">
+<div class="card"><a href="tasks/index.html">下書き</a><b>1</b></div>
+
+
+<div class="card"><a href="acks/index.html">未確認の周知</a><b>0</b></div>
+</div>
+<h3>期限・警告</h3><div class="cards">
+<div class="card"><a href="documents/index.html">見直し期限 超過</a><b class="">0</b></div>
+<div class="card">見直し期限 30日以内<b class="">0</b></div>
+<div class="card"><a href="equipment/index.html">校正期限 超過</a><b class="">0</b></div>
+<div class="card">校正期限 30日以内<b class="warn">1</b></div>
+<div class="card"><a href="checks/index.html">整合性チェックの指摘</a><b class="warn">6</b></div>
+</div>
+<h3>最近承認された文書</h3><table><tr><th>文書</th><th>版</th><th>承認日時</th></tr>
+<tr><td><a href="revisions/2/index.html">SOP-001 酸素欠乏危険作業 作業手順書</a></td><td>Rev.1</td><td>2026-11-07T12:42:39</td></tr><tr><td><a href="revisions/3/index.html">SOP-002 高所作業 作業手順書</a></td><td>Rev.0</td><td>2026-11-07T12:42:39</td></tr></table>
+</main>
+</div></div>
+</body></html>

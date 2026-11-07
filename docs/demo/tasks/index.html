@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>文書管理システム</title><link rel="stylesheet" href="../static/style.css"></head><body><div style="background:#fff3cd;border-bottom:1px solid #e0c36a;padding:8px 16px;font-size:13px">これは見た目確認用の<b>静的デモ</b>です(ダミーデータ・操作は動作しません)。</div>
+
+<div class="layout"><nav class="side">
+<div class="brand">文書管理<small>作業手順書・版管理</small></div>
+<a href="../index.html" class="">ホーム</a>
+<a href="../documents/index.html" class="">文書一覧</a>
+<a href="index.html" class="on">担当タスク</a>
+<a href="../acks/index.html" class="">周知確認</a>
+<a href="../submit/index.html" class="">新規申請</a>
+<div class="sep">管理</div>
+<a href="../equipment/index.html" class="">設備・保護具</a>
+<a href="#" class="">監査出力</a>
+<a href="../checks/index.html" class="">整合性チェック</a>
+<a href="../users/index.html" class="">アカウント</a><a href="../audit/index.html" class="">操作ログ</a>
+<div class="me">管理者 山田<br><span style="opacity:.7">管理者</span><br>
+<a href="#" style="padding:6px 0;border:0;display:inline">パスワード変更</a>
+<form method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><button>ログアウト</button></form></div>
+</nav><div class="content">
+<main>
+<h2>担当タスク</h2>
+
+<h3>下書き・差戻し</h3>
+<table><tr><th>文書</th><th>版</th><th>申請者</th><th>状態</th><th>改訂内容</th><th>適用開始日</th></tr>
+<tr><td><a href="../revisions/6/index.html">SOP-004 玉掛け作業手順書(作成中)</a></td><td>Rev.0</td><td>申請者 佐藤</td>
+<td><span class="tag st-下書き">下書き</span></td><td>初版制定</td><td>2026-12-22</td></tr>
+</table><h3>確認・承認の待ち</h3>
+<table><tr><th>文書</th><th>版</th><th>申請者</th><th>状態</th><th>改訂内容</th><th>適用開始日</th></tr>
+<tr><td><a href="../revisions/4/index.html">FRM-001 酸素濃度測定記録票</a></td><td>Rev.0</td><td>申請者 佐藤</td>
+<td><span class="tag st-承認待ち">承認待ち</span></td><td>様式の新規制定</td><td>2026-11-21</td></tr>
+<tr><td><a href="../revisions/5/index.html">SOP-003 フォークリフト作業手順書</a></td><td>Rev.0</td><td>申請者 佐藤</td>
+<td><span class="tag st-確認待ち">確認待ち</span></td><td>初版制定</td><td>2026-12-07</td></tr>
+</table>
+
+
+
+</main>
+</div></div>
+</body></html>
