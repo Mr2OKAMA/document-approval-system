@@ -1,0 +1,53 @@
+{% extends "base.html" %}{% block body %}
+<h2>{{ rev.doc_no }} {{ rev.title }} Rev.{{ rev.rev_no }} <span class="tag">{{ rev.status }}</span></h2>
+<p><a href="/documents/{{ rev.doc_no }}">← 文書ページ</a></p>
+{% if not hash_ok %}<p class="ng">PDFが無い、またはハッシュが一致しません(改ざんの可能性)。管理者に連絡してください。</p>{% endif %}
+<div class="box">
+改訂内容:{{ rev.change_summary }}<br>改訂理由:{{ rev.change_reason }}<br>適用開始日:{{ rev.effective_date }}<br>
+作成:{{ rev.creator }}({{ rev.created_at }}){% if rev.approved_at %}<br>承認日時:{{ rev.approved_at }}{% endif %}{% if rev.obsoleted_at %}<br>廃版日時:{{ rev.obsoleted_at }}{% endif %}<br>
+PDF:<a href="/revisions/{{ rev.id }}/file" target="_blank">{{ rev.file_name }}</a> <span class="muted">SHA-256 {{ rev.sha256[:16] }}…</span>
+</div>
+
+{% if f.edit %}<h3>下書きの編集</h3>
+<form method="post" action="/revisions/{{ rev.id }}/edit" enctype="multipart/form-data" class="box"><input type="hidden" name="csrf" value="{{ csrf }}">
+<label>改訂内容</label><textarea name="change_summary" rows="3" required>{{ rev.change_summary }}</textarea>
+<label>改訂理由</label><textarea name="change_reason" rows="3" required>{{ rev.change_reason }}</textarea>
+<label>適用開始日</label><input type="date" name="effective_date" value="{{ rev.effective_date }}" required>
+<label>PDFを差し替える場合のみ選択</label><input type="file" name="file" accept="application/pdf">
+<p><button>保存</button></p></form>
+<form method="post" action="/revisions/{{ rev.id }}/submit"><input type="hidden" name="csrf" value="{{ csrf }}"><button>確認依頼(提出)</button></form>{% endif %}
+
+{% if f.review or f.approve %}
+<h3>{{ '確認' if f.review else '承認' }}</h3>
+<form method="post" action="/revisions/{{ rev.id }}/{{ 'review' if f.review else 'approve' }}" class="box"><input type="hidden" name="csrf" value="{{ csrf }}">
+<p>PDFを開いて内容を確認してから判断してください。</p>
+<label>コメント(差戻し時は必須)</label><input type="text" name="comment">
+<p><button name="decision" value="approve">{{ '確認OK(承認者へ)' if f.review else '承認' }}</button>
+<button name="decision" value="reject">差戻し</button></p></form>{% endif %}
+
+{% if f.withdraw %}<form method="post" action="/revisions/{{ rev.id }}/withdraw" class="box"><input type="hidden" name="csrf" value="{{ csrf }}">
+<input type="text" name="comment" placeholder="取下げ理由(必須)" required><button>この申請を取り下げる</button></form>{% endif %}
+
+<h3>確認・承認の経過</h3>
+<table><tr><th>日時</th><th>段階</th><th>判断</th><th>担当者</th><th>コメント</th><th>対象PDF</th></tr>
+{% for a in trail %}<tr><td>{{ a.decided_at }}</td><td>{{ a.step }}</td><td>{{ a.decision }}</td><td>{{ a.name }}</td><td>{{ a.comment }}</td><td class="muted">{{ a.sha256[:8] }}</td></tr>
+{% else %}<tr><td colspan="6" class="muted">まだ提出されていません</td></tr>{% endfor %}</table>
+
+{% if rev.status in ('承認済','廃版') %}
+<h3>周知・教育</h3>
+{% if f.ack %}<form method="post" action="/revisions/{{ rev.id }}/ack"><input type="hidden" name="csrf" value="{{ csrf }}"><button>内容を確認しました(周知確認)</button></form>
+{% elif f.acked %}<p class="ok">あなたは確認済みです。</p>{% endif %}
+{% if user.role!='viewer' %}
+<table><tr><th>実施日</th><th>講師</th><th>受講者</th><th>備考</th></tr>
+{% for t in trainings %}<tr><td>{{ t.held_on }}</td><td>{{ t.trainer }}</td><td>{{ t.attendees }}</td><td>{{ t.note }}</td></tr>
+{% else %}<tr><td colspan="4" class="muted">教育実施記録なし</td></tr>{% endfor %}</table>
+{% if f.training %}<form method="post" action="/revisions/{{ rev.id }}/training" class="box"><input type="hidden" name="csrf" value="{{ csrf }}">
+<label>実施日(適用開始日より前に実施してください)</label><input type="date" name="held_on" value="{{ today }}" max="{{ today }}" required>
+<label>講師</label><input type="text" name="trainer" required>
+<label>受講者(氏名を列挙)</label><textarea name="attendees" rows="2" required></textarea>
+<label>備考</label><input type="text" name="note"><p><button>教育実施を記録</button></p></form>{% endif %}
+<h4>周知確認の状況</h4>
+<table><tr><th>対象者</th><th>確認日時</th></tr>
+{% for u, at in ack_rows %}<tr><td>{{ u.name }}</td><td>{% if at %}{{ at }}{% else %}<span class="warn">未確認</span>{% endif %}</td></tr>{% endfor %}</table>
+{% endif %}{% endif %}
+{% endblock %}

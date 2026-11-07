@@ -1,9 +1,56 @@
 {% extends "base.html" %}{% block body %}
-<h2>{{ doc.doc_no }} {{ doc.title }}</h2>
+<h2>{{ doc.doc_no }} {{ doc.title }} {% if doc.abolished_at %}<span class="ng">【廃止】</span>{% endif %}</h2>
+<div class="box">
+分類:{{ doc.category or '-' }} / 部署:{{ doc.department or '-' }} / 見直し周期:{{ doc.review_cycle_months }}か月<br>
+現行版:{% if cur %}<a href="/revisions/{{ cur.id }}">Rev.{{ cur.rev_no }}</a>(適用開始日 {{ cur.effective_date }})
+<a href="/revisions/{{ cur.id }}/file" target="_blank">PDFを開く</a>{% else %}<span class="muted">適用中の版はありません</span>{% endif %}<br>
+{% if due %}次回見直し期限:{{ due }} <span class="{{ 'ng' if due_state=='超過' else ('warn' if due_state=='間近') }}">{{ due_state if due_state!='OK' }}</span>{% endif %}
+{% if doc.abolished_at %}<br><span class="ng">廃止:{{ doc.abolished_at }} 理由:{{ doc.abolished_reason }}</span>{% endif %}
+</div>
+{% if user.role in ('admin','author') and not doc.abolished_at %}<p><a href="/submit?doc_no={{ doc.doc_no }}">この文書の改訂を申請する</a></p>{% endif %}
+
 <h3>改訂履歴</h3>
-<table><tr><th>版</th><th>状態</th><th>改訂内容</th><th>改訂理由</th><th>適用開始日</th><th>申請</th><th>承認/差戻し</th><th></th></tr>
-{% for r in revs %}<tr><td>Rev.{{ r.rev_no }}</td><td>{{ r.status }}</td><td>{{ r.change_summary }}</td><td>{{ r.change_reason }}</td>
-<td>{{ r.effective_date }}</td><td>{{ r.submitter }}<br>{{ r.submitted_at }}</td>
-<td>{% if r.decided_at %}{{ r.decider }}<br>{{ r.decided_at }}<br>{{ r.decision_comment }}{% endif %}</td>
-<td><a href="/revisions/{{ r.id }}/file" target="_blank">PDF</a></td></tr>{% endfor %}</table>
-{% if user.role in ('admin','author') %}<p><a href="/submit">改訂を申請する</a></p>{% endif %}{% endblock %}
+<table><tr><th>版</th><th>状態</th><th>改訂内容</th><th>改訂理由</th><th>適用開始日</th><th>作成</th><th>承認日時</th></tr>
+{% for r in revs %}<tr><td><a href="/revisions/{{ r.id }}">Rev.{{ r.rev_no }}</a></td><td>{{ r.status }}</td><td>{{ r.change_summary }}</td><td>{{ r.change_reason }}</td>
+<td>{{ r.effective_date }}</td><td>{{ r.creator }}<br>{{ r.created_at }}</td><td>{{ r.approved_at or '' }}</td></tr>{% endfor %}</table>
+
+{% if user.role!='viewer' %}
+<h3>定期見直し記録</h3>
+<table><tr><th>見直し日</th><th>結果</th><th>コメント</th><th>実施者</th></tr>
+{% for v in reviews %}<tr><td>{{ v.reviewed_on }}</td><td>{{ v.result }}</td><td>{{ v.comment }}</td><td>{{ v.reviewer }}</td></tr>
+{% else %}<tr><td colspan="4" class="muted">記録なし</td></tr>{% endfor %}</table>
+{% if not doc.abolished_at %}<form method="post" action="/documents/{{ doc.doc_no }}/reviews" class="inline"><input type="hidden" name="csrf" value="{{ csrf }}">
+見直し日<input type="date" name="reviewed_on" value="{{ today }}" max="{{ today }}" required>
+<select name="result"><option>変更なし</option><option>改訂が必要</option></select>
+<input type="text" name="comment" placeholder="コメント"> <button>見直しを記録</button></form>{% endif %}
+{% endif %}
+
+<h3>関連文書</h3>
+<ul>{% for l in links %}<li><a href="/documents/{{ l.doc_no }}">{{ l.doc_no }} {{ l.title }}</a> {{ l.note }}
+{% if user.role in ('admin','author','approver') %}<form class="inline" method="post" action="/documents/{{ doc.doc_no }}/links/{{ l.id }}/delete"><input type="hidden" name="csrf" value="{{ csrf }}"><button>外す</button></form>{% endif %}</li>
+{% else %}<li class="muted">なし</li>{% endfor %}</ul>
+{% if user.role in ('admin','author','approver') %}<form method="post" action="/documents/{{ doc.doc_no }}/links" class="inline"><input type="hidden" name="csrf" value="{{ csrf }}">
+<input type="text" name="to_doc_no" placeholder="関連する文書番号" required><input type="text" name="note" placeholder="備考(様式・上位規程など)"><button>追加</button></form>{% endif %}
+
+{% if user.role!='viewer' %}
+<h3>使用する設備・保護具</h3>
+<ul>{% for e in equipment %}<li>{{ e.name }} {{ e.model }}(使用開始日 {{ e.in_use_since }}、校正期限 {{ e.calibration_due or '未記録' }})
+{% if user.role in ('admin','author','approver') %}<form class="inline" method="post" action="/documents/{{ doc.doc_no }}/equipment/{{ e.id }}/delete"><input type="hidden" name="csrf" value="{{ csrf }}"><button>解除</button></form>{% endif %}</li>
+{% else %}<li class="muted">なし</li>{% endfor %}</ul>
+{% if user.role in ('admin','author','approver') and all_equipment %}<form method="post" action="/documents/{{ doc.doc_no }}/equipment" class="inline"><input type="hidden" name="csrf" value="{{ csrf }}">
+<select name="equipment_id">{% for e in all_equipment %}<option value="{{ e.id }}">{{ e.name }}</option>{% endfor %}</select><button>紐付け</button></form>{% endif %}
+{% endif %}
+
+{% if user.role in ('admin','approver') %}
+<h3>文書情報の変更・廃止</h3>
+<form method="post" action="/documents/{{ doc.doc_no }}/settings" class="box"><input type="hidden" name="csrf" value="{{ csrf }}">
+<label>名称</label><input type="text" name="title" value="{{ doc.title }}" required>
+<label>分類</label><input type="text" name="category" value="{{ doc.category }}">
+<label>部署</label><input type="text" name="department" value="{{ doc.department }}">
+<label>見直し周期(月)</label><input type="number" name="review_cycle_months" value="{{ doc.review_cycle_months }}" min="1" max="120">
+<p><button>更新</button></p></form>
+{% if doc.abolished_at %}{% if user.role=='admin' %}<form method="post" action="/documents/{{ doc.doc_no }}/reinstate"><input type="hidden" name="csrf" value="{{ csrf }}"><button>廃止を取り消す</button></form>{% endif %}
+{% else %}<form method="post" action="/documents/{{ doc.doc_no }}/abolish" class="box"><input type="hidden" name="csrf" value="{{ csrf }}">
+<input type="text" name="reason" placeholder="廃止理由(必須)" required><button>この文書を廃止する</button></form>{% endif %}
+{% endif %}
+{% endblock %}

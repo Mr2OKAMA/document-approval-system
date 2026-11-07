@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% block body %}
+<h2>設備・保護具台帳(酸欠計・墜落制止用器具など)</h2>
+<table><tr><th>名称</th><th>型式/製造番号</th><th>使用開始日</th><th>校正期限</th><th>関連手順書</th><th>校正履歴(直近5件)</th>{% if can_manage %}<th>操作</th>{% endif %}</tr>
+{% for x in rows %}{% set e=x.e %}<tr {% if not e.active %}class="muted"{% endif %}><td>{{ e.name }}{% if not e.active %}(使用停止){% endif %}</td><td>{{ e.model }}<br>{{ e.serial_no }}</td><td>{{ e.in_use_since }}</td>
+<td>{{ e.calibration_due or '未記録' }} <span class="{{ 'ng' if x.state=='超過' else ('warn' if x.state=='間近') }}">{{ x.state if x.state!='OK' }}</span></td>
+<td>{% for d in x.docs %}<a href="/documents/{{ d.doc_no }}">{{ d.doc_no }}</a><br>{% endfor %}</td>
+<td>{% for c in x.cals %}{{ c.done_on }} {{ c.result }}(次回 {{ c.due_on }})<br>{% endfor %}</td>
+{% if can_manage %}<td>{% if e.active %}<form method="post" action="/equipment/{{ e.id }}/calibration"><input type="hidden" name="csrf" value="{{ csrf }}">
+<input type="date" name="done_on" value="{{ today() }}" max="{{ today() }}" required><select name="result"><option>合格</option><option>不合格</option></select><input type="text" name="note" placeholder="備考"><button>校正を記録</button></form>{% endif %}
+<form method="post" action="/equipment/{{ e.id }}/toggle"><input type="hidden" name="csrf" value="{{ csrf }}"><button>{{ '使用停止' if e.active else '使用再開' }}</button></form></td>{% endif %}</tr>
+{% else %}<tr><td colspan="7" class="muted">設備が登録されていません</td></tr>{% endfor %}</table>
+{% if can_manage %}<h3>設備の登録</h3>
+<form method="post" action="/equipment" class="box"><input type="hidden" name="csrf" value="{{ csrf }}">
+<label>名称</label><input type="text" name="name" required><label>型式</label><input type="text" name="model"><label>製造番号</label><input type="text" name="serial_no">
+<label>使用開始日(購入・導入記録に基づく実際の日付)</label><input type="date" name="in_use_since" required>
+<label>校正周期(月)</label><input type="number" name="calibration_cycle_months" value="12" min="1" max="120"><label>備考</label><input type="text" name="note">
+<p><button>登録</button></p></form>{% endif %}{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% block body %}
+<h2>文書一覧{% if show=='abolished' %}(廃止文書){% endif %}</h2>
+<form method="get" class="box">
+<input type="text" name="q" value="{{ q }}" placeholder="文書番号・名称・分類・改訂内容で検索" style="max-width:320px">
+<select name="category"><option value="">分類(すべて)</option>{% for c in cats %}<option {{ 'selected' if c==category }}>{{ c }}</option>{% endfor %}</select>
+<select name="department"><option value="">部署(すべて)</option>{% for c in deps %}<option {{ 'selected' if c==department }}>{{ c }}</option>{% endfor %}</select>
+{% if user.role!='viewer' %}<select name="show"><option value="active">有効な文書</option><option value="abolished" {{ 'selected' if show=='abolished' }}>廃止文書</option></select>{% endif %}
+<button>検索</button></form>
+<table><tr><th>文書番号</th><th>名称</th><th>分類</th><th>部署</th><th>現行版</th><th>適用開始日</th><th>見直し期限</th><th></th></tr>
+{% for x in rows %}{% set d=x.d %}<tr><td><a href="/documents/{{ d.doc_no }}">{{ d.doc_no }}</a></td><td>{{ d.title }}</td><td>{{ d.category }}</td><td>{{ d.department }}</td>
+<td>{% if d.rev_id %}Rev.{{ d.rev_no }}{% else %}<span class="muted">適用中の版なし</span>{% endif %}{% if d.open_count and user.role!='viewer' %} <span class="tag">申請中</span>{% endif %}</td>
+<td>{{ d.effective_date or '' }}</td>
+<td>{% if x.due %}{{ x.due }} <span class="{{ 'ng' if x.due_state=='超過' else ('warn' if x.due_state=='間近') }}">{{ x.due_state if x.due_state!='OK' }}</span>{% endif %}</td>
+<td>{% if d.rev_id %}<a href="/revisions/{{ d.rev_id }}/file" target="_blank">PDF</a>{% endif %}</td></tr>
+{% else %}<tr><td colspan="8" class="muted">該当する文書がありません</td></tr>{% endfor %}</table>{% endblock %}

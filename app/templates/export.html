@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block body %}
+<h2>監査出力</h2>
+<p>監査提出用に、台帳・履歴・記録をExcelまたはCSVで出力します(出力操作は操作ログに記録されます)。</p>
+<table><tr><th>帳票</th><th>形式</th></tr>
+{% for k,v in items.items() %}<tr><td>{{ v }}</td><td><a href="/export/{{ k }}.xlsx">Excel</a> / <a href="/export/{{ k }}.csv">CSV</a></td></tr>{% endfor %}</table>{% endblock %}

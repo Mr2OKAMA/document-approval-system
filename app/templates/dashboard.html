@@ -1,0 +1,18 @@
+{% extends "base.html" %}{% block body %}
+<h2>ホーム</h2>
+<div class="cards">
+{% if 'drafts' in cards %}<div class="card"><a href="/tasks">下書き</a><b>{{ cards.drafts }}</b></div>{% endif %}
+{% if 'to_review' in cards %}<div class="card"><a href="/tasks">確認待ち</a><b>{{ cards.to_review }}</b></div>{% endif %}
+{% if 'to_approve' in cards %}<div class="card"><a href="/tasks">承認待ち</a><b>{{ cards.to_approve }}</b></div>{% endif %}
+<div class="card"><a href="/acks">未確認の周知</a><b>{{ cards.to_ack }}</b></div>
+</div>
+{% if alerts %}<h3>期限・警告</h3><div class="cards">
+{% if 'review_over' in alerts %}<div class="card"><a href="/documents">見直し期限 超過</a><b class="{{ 'ng' if alerts.review_over }}">{{ alerts.review_over }}</b></div>
+<div class="card">見直し期限 30日以内<b class="{{ 'warn' if alerts.review_soon }}">{{ alerts.review_soon }}</b></div>
+<div class="card"><a href="/equipment">校正期限 超過</a><b class="{{ 'ng' if alerts.cal_over }}">{{ alerts.cal_over }}</b></div>
+<div class="card">校正期限 30日以内<b class="{{ 'warn' if alerts.cal_soon }}">{{ alerts.cal_soon }}</b></div>{% endif %}
+{% if 'issues' in alerts %}<div class="card"><a href="/checks">整合性チェックの指摘</a><b class="{{ 'warn' if alerts.issues }}">{{ alerts.issues }}</b></div>{% endif %}
+</div>{% endif %}
+{% if recent %}<h3>最近承認された文書</h3><table><tr><th>文書</th><th>版</th><th>承認日時</th></tr>
+{% for r in recent %}<tr><td><a href="/revisions/{{ r.id }}">{{ r.doc_no }} {{ r.title }}</a></td><td>Rev.{{ r.rev_no }}</td><td>{{ r.approved_at }}</td></tr>{% endfor %}</table>{% endif %}
+{% endblock %}

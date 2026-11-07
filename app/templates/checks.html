@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block body %}
+<h2>整合性チェック</h2>
+<p class="muted">「やっているが書いていない」「書いているがやっていない」を防ぐための点検です。指摘は是正し、是正の記録を残してください。</p>
+<table><tr><th>区分</th><th>種別</th><th>内容</th></tr>
+{% for i in items %}<tr><td class="{{ 'ng' if i.level=='エラー' else 'warn' }}">{{ i.level }}</td><td>{{ i.kind }}</td><td>{% if i.link %}<a href="{{ i.link }}">{{ i.msg }}</a>{% else %}{{ i.msg }}{% endif %}</td></tr>
+{% else %}<tr><td colspan="3" class="ok">指摘事項はありません</td></tr>{% endfor %}</table>{% endblock %}
