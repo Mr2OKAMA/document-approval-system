@@ -27,9 +27,13 @@ def _rev_or_404(conn, rev_id: int):
 
 
 def visible_to(user, rev) -> bool:
-    if user["role"] != "viewer":
+    role, st = user["role"], rev["status"]
+    if role == "viewer":
+        return st == "承認済" and rev["effective_date"] <= db.today().isoformat() and not rev["abolished_at"]
+    if st in ("承認済", "廃版") or role == "admin" or rev["created_by"] == user["id"]:
         return True
-    return rev["status"] == "承認済" and rev["effective_date"] <= db.today().isoformat() and not rev["abolished_at"]
+    # 未承認版は、手続きに関わる役割にだけ見せる
+    return (st == "確認待ち" and role == "reviewer") or (st == "承認待ち" and role in ("reviewer", "approver"))
 
 
 def _flags(conn, user, rev) -> dict:
@@ -108,6 +112,8 @@ def document_detail(doc_no: str, request: Request, user=Depends(current_user), c
     ).fetchall()
     if user["role"] == "viewer":
         revs = [r for r in revs if r["id"] == cur["id"]]
+    else:
+        revs = [r for r in revs if visible_to(user, {**dict(r), "abolished_at": doc["abolished_at"]})]
     due = services.next_review_date(conn, doc)
     reviews = conn.execute(
         "SELECT v.*, u.name AS reviewer FROM doc_reviews v JOIN users u ON u.id=v.reviewed_by "
@@ -347,7 +353,8 @@ def submit_for_review(rev_id: int, request: Request, user=Depends(require(*AUTHO
     for role, label in (("reviewer", "確認者"), ("approver", "承認者")):
         if not conn.execute("SELECT 1 FROM users WHERE role=? AND active=1 AND id<>?", (role, user["id"])).fetchone():
             return back(request, url, f"提出できる{label}がいません。管理者に{label}アカウントの作成を依頼してください")
-    conn.execute("UPDATE revisions SET status='確認待ち' WHERE id=?", (rev_id,))
+    if not _transition(conn, rev_id, "下書き", "確認待ち"):
+        return back(request, url, "他の操作で状態が変わりました。画面を更新してください")
     services.record(conn, rev, user, "提出", "提出")
     db.log(conn, user["login_id"], "確認依頼", f"{rev['doc_no']} Rev.{rev['rev_no']}")
     return back(request, url, "確認者へ依頼しました")
@@ -361,10 +368,18 @@ def withdraw(rev_id: int, request: Request, comment: str = Form(""), user=Depend
         raise HTTPException(403, "取り下げできません")
     if not comment.strip():
         return back(request, f"/revisions/{rev_id}", "取下げ理由を入力してください")
-    conn.execute("UPDATE revisions SET status='取下げ' WHERE id=?", (rev_id,))
+    if not _transition(conn, rev_id, rev["status"], "取下げ"):
+        return back(request, f"/revisions/{rev_id}", "他の操作で状態が変わりました。画面を更新してください")
     services.record(conn, rev, user, "取下げ", "取下げ", comment.strip())
     db.log(conn, user["login_id"], "取下げ", f"{rev['doc_no']} Rev.{rev['rev_no']}", comment.strip())
     return back(request, f"/documents/{rev['doc_no']}", "申請を取り下げました")
+
+
+def _transition(conn, rev_id: int, expected: str, new: str, **extra) -> bool:
+    """現在の状態が expected のときだけ遷移する(同時操作による二重処理の防止)。"""
+    sets = ", ".join(["status=?"] + [f"{k}=?" for k in extra])
+    cur = conn.execute(f"UPDATE revisions SET {sets} WHERE id=? AND status=?", (new, *extra.values(), rev_id, expected))
+    return cur.rowcount == 1
 
 
 def _decide(request, rev_id, step, decision, comment, user, conn, flag):
@@ -379,15 +394,20 @@ def _decide(request, rev_id, step, decision, comment, user, conn, flag):
     if not services.file_ok(rev):
         return back(request, url, "PDFのハッシュが一致しないため処理できません")
     label = f"{rev['doc_no']} Rev.{rev['rev_no']}"
+    expected = rev["status"]
+    stale = "他の操作で状態が変わりました。画面を更新してください"
     if decision == "reject":
-        conn.execute("UPDATE revisions SET status='下書き' WHERE id=?", (rev_id,))
+        if not _transition(conn, rev_id, expected, "下書き"):
+            return back(request, url, stale)
         services.record(conn, rev, user, step, "差戻し", comment.strip())
         db.log(conn, user["login_id"], f"{step}:差戻し", label, comment.strip())
         return back(request, "/tasks", f"{label} を差し戻しました")
     if step == "確認":
-        conn.execute("UPDATE revisions SET status='承認待ち' WHERE id=?", (rev_id,))
+        ok = _transition(conn, rev_id, expected, "承認待ち")
     else:
-        conn.execute("UPDATE revisions SET status='承認済', approved_at=? WHERE id=?", (db.now(), rev_id))
+        ok = _transition(conn, rev_id, expected, "承認済", approved_at=db.now())
+    if not ok:
+        return back(request, url, stale)
     services.record(conn, rev, user, step, "承認", comment.strip())
     db.log(conn, user["login_id"], f"{step}:承認", label, comment.strip())
     services.refresh_status(conn)

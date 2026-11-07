@@ -189,3 +189,28 @@ def test_tamper_detection(team):
     next(t["db"].DATA_DIR.joinpath("files").glob("*.pdf")).write_bytes(b"%PDF tampered")
     assert t["viewer"].get("/revisions/1/file").status_code == 500
     assert "ハッシュ不一致" in t["admin"].get("/checks").text
+
+
+def test_unapproved_revisions_hidden_from_unrelated_staff(team):
+    t = team
+    make_user(t["app"], t["db"], t["admin"], "taro2", "author")
+    other = session(t["app"], "taro2")
+    create_draft(t["author"])
+    assert other.get("/revisions/1").status_code == 404
+    assert other.get("/revisions/1/file").status_code == 404
+    assert t["reviewer"].get("/revisions/1").status_code == 404  # 下書きは確認者にも非公開
+    t["author"].post("/revisions/1/submit", data={"csrf": csrf(t["author"], "/revisions/1")})
+    assert t["reviewer"].get("/revisions/1").status_code == 200
+    assert t["approver"].get("/revisions/1").status_code == 404  # 確認が済むまで承認者には非公開
+    assert other.get("/revisions/1").status_code == 404
+
+
+def test_calibration_backdated_entry_keeps_latest_due(team):
+    t = team
+    c = t["author"]
+    c.post("/equipment", data={"name": "酸欠計", "in_use_since": "2020-01-01", "calibration_cycle_months": "12",
+                               "csrf": csrf(c, "/equipment")})
+    c.post("/equipment/1/calibration", data={"done_on": "2025-10-01", "result": "合格", "csrf": csrf(c, "/equipment")})
+    c.post("/equipment/1/calibration", data={"done_on": "2020-01-01", "result": "合格", "csrf": csrf(c, "/equipment")})
+    with t["db"].connect() as conn:
+        assert conn.execute("SELECT calibration_due FROM equipment WHERE id=1").fetchone()[0] == "2026-10-01"

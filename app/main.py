@@ -2,6 +2,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 
 from . import core, db
@@ -42,5 +43,6 @@ async def _http_error(request: Request, exc: HTTPException):
 
 
 db.init_db()
+app.mount("/static", StaticFiles(directory=str(Path(__file__).parent / "static")), name="static")
 for r in (auth, tasks, documents, equipment, admin):
     app.include_router(r.router)

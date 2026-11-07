@@ -16,6 +16,15 @@ export DOCMGMT_HTTPS=1                              # HTTPSで運用する場合
 .venv/bin/python -m scripts.create_admin            # 最初の管理者を作成
 .venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
+起動後、ブラウザで http://localhost:8000 を開きます。
+
+### デモで画面を試す(実データ不可)
+```
+export DOCMGMT_DATA=/tmp/demo_data DOCMGMT_SECRET=demo
+.venv/bin/python -m scripts.seed_demo
+.venv/bin/uvicorn app.main:app --port 8000
+```
+ID: admin / sato(申請) / suzuki(確認) / tanaka(承認) / ito(閲覧)、パスワード: `demo-pass-1234`
 
 ## 機能
 | 区分 | 内容 |

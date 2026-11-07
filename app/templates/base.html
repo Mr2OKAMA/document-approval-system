@@ -1,27 +1,23 @@
 <!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>文書管理システム</title>
-<style>
-body{font-family:sans-serif;margin:0;color:#222;font-size:15px}
-header{background:#1f4e79;color:#fff;padding:8px 16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
-header a{color:#fff;text-decoration:none} header form{margin:0 0 0 auto;display:inline}
-main{padding:16px;max-width:1100px;margin:auto}
-table{border-collapse:collapse;width:100%;margin-bottom:12px} th,td{border:1px solid #ccc;padding:6px;text-align:left;vertical-align:top}
-th{background:#f0f0f0} .msg{background:#fff3cd;padding:8px;margin-bottom:12px}
-label{display:block;margin:8px 0 2px} input[type=text],input[type=password],input[type=date],input[type=number],textarea,select{width:100%;max-width:480px;padding:4px;box-sizing:border-box}
-.inline input,.inline select{width:auto;display:inline}.inline{display:inline}
-.ok{color:#080}.ng{color:#c00;font-weight:bold}.warn{color:#b35c00;font-weight:bold}.muted{color:#777}
-.cards{display:flex;gap:12px;flex-wrap:wrap}.card{border:1px solid #ccc;padding:12px 18px;border-radius:6px;min-width:150px}
-.card b{font-size:26px;display:block}.box{border:1px solid #ccc;padding:10px;margin-bottom:12px;border-radius:4px}
-.tag{display:inline-block;padding:1px 8px;border-radius:10px;background:#e8eef5;font-size:13px}
-</style></head><body>
-{% if user %}<header><strong>文書管理</strong>
-<a href="/">ホーム</a><a href="/documents">文書一覧</a><a href="/tasks">担当タスク</a><a href="/acks">周知確認</a>
-{% if user.role in ('admin','author') %}<a href="/submit">新規申請</a>{% endif %}
-{% if user.role != 'viewer' %}<a href="/equipment">設備</a><a href="/export">監査出力</a>{% endif %}
-{% if user.role in ('admin','approver','reviewer') %}<a href="/checks">整合性チェック</a>{% endif %}
-{% if user.role=='admin' %}<a href="/users">アカウント</a><a href="/audit">操作ログ</a>{% endif %}
-<a href="/password">パスワード変更</a>
-<form method="post" action="/logout">{{ user.name }}({{ roles[user.role] }}) <input type="hidden" name="csrf" value="{{ csrf }}"><button>ログアウト</button></form></header>{% endif %}
-<main>{% if msg %}<div class="msg">{{ msg }}</div>{% endif %}{% block body %}{% endblock %}</main>
+<title>文書管理システム</title><link rel="stylesheet" href="/static/style.css"></head><body>
+{% set p = request.url.path %}
+{% if user %}<div class="layout"><nav class="side">
+<div class="brand">文書管理<small>作業手順書・版管理</small></div>
+<a href="/" class="{{ 'on' if p=='/' }}">ホーム</a>
+<a href="/documents" class="{{ 'on' if p.startswith('/documents') or p.startswith('/revisions') }}">文書一覧</a>
+<a href="/tasks" class="{{ 'on' if p=='/tasks' }}">担当タスク</a>
+<a href="/acks" class="{{ 'on' if p=='/acks' }}">周知確認</a>
+{% if user.role in ('admin','author') %}<a href="/submit" class="{{ 'on' if p=='/submit' }}">新規申請</a>{% endif %}
+{% if user.role != 'viewer' %}<div class="sep">管理</div>
+<a href="/equipment" class="{{ 'on' if p=='/equipment' }}">設備・保護具</a>
+<a href="/export" class="{{ 'on' if p.startswith('/export') }}">監査出力</a>{% endif %}
+{% if user.role in ('admin','approver','reviewer') %}<a href="/checks" class="{{ 'on' if p=='/checks' }}">整合性チェック</a>{% endif %}
+{% if user.role=='admin' %}<a href="/users" class="{{ 'on' if p=='/users' }}">アカウント</a><a href="/audit" class="{{ 'on' if p=='/audit' }}">操作ログ</a>{% endif %}
+<div class="me">{{ user.name }}<br><span style="opacity:.7">{{ roles[user.role] }}</span><br>
+<a href="/password" style="padding:6px 0;border:0;display:inline">パスワード変更</a>
+<form method="post" action="/logout"><input type="hidden" name="csrf" value="{{ csrf }}"><button>ログアウト</button></form></div>
+</nav><div class="content">{% endif %}
+<main>{% if msg %}<div class="msg"{% if not user %} style="max-width:400px;margin:20px auto 0"{% endif %}>{{ msg }}</div>{% endif %}{% block body %}{% endblock %}</main>
+{% if user %}</div></div>{% endif %}
 </body></html>

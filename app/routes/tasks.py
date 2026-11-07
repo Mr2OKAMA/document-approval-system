@@ -91,7 +91,8 @@ def acks(request: Request, user=Depends(current_user), conn=Depends(get_conn)):
 
 
 @router.post("/revisions/{rev_id}/ack", dependencies=[Depends(check_csrf)])
-def acknowledge(rev_id: int, request: Request, user=Depends(current_user), conn=Depends(get_conn)):
+def acknowledge(rev_id: int, request: Request, back_to: str = Form("rev"), user=Depends(current_user),
+                conn=Depends(get_conn)):
     rev = _rev_or_404(conn, rev_id)
     if rev["status"] != "承認済" or not visible_to(user, rev) or user["role"] == "admin":
         raise HTTPException(403, "確認できません")
@@ -99,7 +100,7 @@ def acknowledge(rev_id: int, request: Request, user=Depends(current_user), conn=
         conn.execute("INSERT INTO acknowledgements(revision_id,user_id,acknowledged_at) VALUES(?,?,?)",
                      (rev_id, user["id"], db.now()))
         db.log(conn, user["login_id"], "周知確認", f"{rev['doc_no']} Rev.{rev['rev_no']}")
-    return back(request, request.headers.get("referer") or "/acks", "確認を記録しました")
+    return back(request, "/acks" if back_to == "acks" else f"/revisions/{rev_id}", "確認を記録しました")
 
 
 @router.post("/revisions/{rev_id}/training", dependencies=[Depends(check_csrf)])

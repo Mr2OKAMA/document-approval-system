@@ -69,7 +69,7 @@ def create_draft(c, doc_no="SOP-001", reason="酸欠計の携行を追加", effe
 
 def act(c, rev_id, action, decision="approve", comment=""):
     return c.post(f"/revisions/{rev_id}/{action}",
-                  data={"decision": decision, "comment": comment, "csrf": csrf(c, f"/revisions/{rev_id}")})
+                  data={"decision": decision, "comment": comment, "csrf": csrf(c, "/tasks")})
 
 
 def approve_all(t, rev_id):

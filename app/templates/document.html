@@ -11,7 +11,7 @@
 
 <h3>改訂履歴</h3>
 <table><tr><th>版</th><th>状態</th><th>改訂内容</th><th>改訂理由</th><th>適用開始日</th><th>作成</th><th>承認日時</th></tr>
-{% for r in revs %}<tr><td><a href="/revisions/{{ r.id }}">Rev.{{ r.rev_no }}</a></td><td>{{ r.status }}</td><td>{{ r.change_summary }}</td><td>{{ r.change_reason }}</td>
+{% for r in revs %}<tr><td><a href="/revisions/{{ r.id }}">Rev.{{ r.rev_no }}</a></td><td><span class="tag st-{{ r.status }}">{{ r.status }}</span></td><td>{{ r.change_summary }}</td><td>{{ r.change_reason }}</td>
 <td>{{ r.effective_date }}</td><td>{{ r.creator }}<br>{{ r.created_at }}</td><td>{{ r.approved_at or '' }}</td></tr>{% endfor %}</table>
 
 {% if user.role!='viewer' %}

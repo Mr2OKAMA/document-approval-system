@@ -1,5 +1,5 @@
 {% extends "base.html" %}{% block body %}
-<h2>{{ rev.doc_no }} {{ rev.title }} Rev.{{ rev.rev_no }} <span class="tag">{{ rev.status }}</span></h2>
+<h2>{{ rev.doc_no }} {{ rev.title }} Rev.{{ rev.rev_no }} <span class="tag st-{{ rev.status }}">{{ rev.status }}</span></h2>
 <p><a href="/documents/{{ rev.doc_no }}">← 文書ページ</a></p>
 {% if not hash_ok %}<p class="ng">PDFが無い、またはハッシュが一致しません(改ざんの可能性)。管理者に連絡してください。</p>{% endif %}
 <div class="box">

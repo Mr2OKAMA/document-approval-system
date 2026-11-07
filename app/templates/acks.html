@@ -4,7 +4,7 @@
 <table><tr><th>文書</th><th>版</th><th>改訂内容</th><th>適用開始日</th><th></th></tr>
 {% for r in pending %}<tr><td><a href="/revisions/{{ r.id }}">{{ r.doc_no }} {{ r.title }}</a></td><td>Rev.{{ r.rev_no }}</td><td>{{ r.change_summary }}</td><td>{{ r.effective_date }}</td>
 <td><a href="/revisions/{{ r.id }}/file" target="_blank">PDFを開く</a>
-<form class="inline" method="post" action="/revisions/{{ r.id }}/ack"><input type="hidden" name="csrf" value="{{ csrf }}"><button>確認しました</button></form></td></tr>
+<form class="inline" method="post" action="/revisions/{{ r.id }}/ack"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="back_to" value="acks"><button>確認しました</button></form></td></tr>
 {% else %}<tr><td colspan="5" class="muted">未確認の文書はありません</td></tr>{% endfor %}</table>
 <h3>自分の確認履歴</h3>
 <table><tr><th>文書</th><th>版</th><th>確認日時</th></tr>

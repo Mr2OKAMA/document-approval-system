@@ -47,8 +47,11 @@ def calibrate(eid: int, request: Request, done_on: str = Form(...), result: str 
     due = services.add_months(d, e["calibration_cycle_months"]).isoformat()
     conn.execute("INSERT INTO calibrations(equipment_id,done_on,due_on,result,note,recorded_by,recorded_at) VALUES(?,?,?,?,?,?,?)",
                  (eid, done_on, due, result, note.strip(), user["id"], db.now()))
-    # 不合格の場合は期限を設定せず、整合性チェックで「校正記録なし」として扱う
-    conn.execute("UPDATE equipment SET calibration_due=? WHERE id=?", (due if result == "合格" else None, eid))
+    # 期限は実施日が最新の記録から決める(過去日の追記で上書きしない)。不合格が最新なら期限なし
+    latest = conn.execute("SELECT result, due_on FROM calibrations WHERE equipment_id=? ORDER BY done_on DESC, id DESC LIMIT 1",
+                          (eid,)).fetchone()
+    conn.execute("UPDATE equipment SET calibration_due=? WHERE id=?",
+                 (latest["due_on"] if latest["result"] == "合格" else None, eid))
     db.log(conn, user["login_id"], "校正記録", e["name"], f"{done_on} {result}")
     return back(request, "/equipment", "校正を記録しました")
 

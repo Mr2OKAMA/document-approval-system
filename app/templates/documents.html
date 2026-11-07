@@ -1,6 +1,6 @@
 {% extends "base.html" %}{% block body %}
 <h2>文書一覧{% if show=='abolished' %}(廃止文書){% endif %}</h2>
-<form method="get" class="box">
+<form method="get" class="toolbar">
 <input type="text" name="q" value="{{ q }}" placeholder="文書番号・名称・分類・改訂内容で検索" style="max-width:320px">
 <select name="category"><option value="">分類(すべて)</option>{% for c in cats %}<option {{ 'selected' if c==category }}>{{ c }}</option>{% endfor %}</select>
 <select name="department"><option value="">部署(すべて)</option>{% for c in deps %}<option {{ 'selected' if c==department }}>{{ c }}</option>{% endfor %}</select>

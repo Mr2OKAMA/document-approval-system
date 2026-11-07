@@ -3,7 +3,7 @@
 {% macro table(items, empty) %}
 <table><tr><th>文書</th><th>版</th><th>申請者</th><th>状態</th><th>改訂内容</th><th>適用開始日</th></tr>
 {% for i in items %}<tr><td><a href="/revisions/{{ i.id }}">{{ i.doc_no }} {{ i.title }}</a></td><td>Rev.{{ i.rev_no }}</td><td>{{ i.creator }}</td>
-<td>{{ i.status }}{% if rejected.get(i.id) %}<br><span class="warn">差戻し:{{ rejected[i.id] }}</span>{% endif %}</td><td>{{ i.change_summary }}</td><td>{{ i.effective_date }}</td></tr>
+<td><span class="tag st-{{ i.status }}">{{ i.status }}</span>{% if rejected.get(i.id) %}<br><span class="warn">差戻し:{{ rejected[i.id] }}</span>{% endif %}</td><td>{{ i.change_summary }}</td><td>{{ i.effective_date }}</td></tr>
 {% else %}<tr><td colspan="6" class="muted">{{ empty }}</td></tr>{% endfor %}</table>{% endmacro %}
 {% if user.role in ('admin','author') %}<h3>下書き・差戻し</h3>{{ table(drafts,'なし') }}<h3>確認・承認の待ち</h3>{{ table(waiting,'なし') }}{% endif %}
 {% if user.role=='reviewer' %}<h3>確認待ち</h3>{{ table(review,'確認待ちはありません') }}{% endif %}
