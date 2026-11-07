@@ -3,20 +3,20 @@
 <title>文書管理システム</title><link rel="stylesheet" href="../../static/style.css"></head><body><div style="background:#fff3cd;border-bottom:1px solid #e0c36a;padding:8px 16px;font-size:13px">これは見た目確認用の<b>静的デモ</b>です(ダミーデータ・操作は動作しません)。</div>
 
 <div class="layout"><nav class="side">
-<div class="brand">文書管理<small>作業手順書・版管理</small></div>
+<div class="brand">文書管理<small>文書の版管理・承認</small></div>
 <a href="../../index.html" class="">ホーム</a>
 <a href="../index.html" class="on">文書一覧</a>
 <a href="../../tasks/index.html" class="">担当タスク</a>
 <a href="../../acks/index.html" class="">周知確認</a>
 <a href="../../submit/index.html" class="">新規申請</a>
 <div class="sep">管理</div>
-<a href="../../equipment/index.html" class="">設備・保護具</a>
+<a href="../../equipment/index.html" class="">設備・機器台帳</a>
 <a href="#" class="">監査出力</a>
 <a href="../../checks/index.html" class="">整合性チェック</a>
 <a href="../../users/index.html" class="">アカウント</a><a href="../../audit/index.html" class="">操作ログ</a>
 <div class="me">管理者 山田<br><span style="opacity:.7">管理者</span><br>
 <a href="#" style="padding:6px 0;border:0;display:inline">パスワード変更</a>
-<form method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><button>ログアウト</button></form></div>
+<form method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="17cdd3e2e915cb0a0c885d1599ce7a84"><button>ログアウト</button></form></div>
 </nav><div class="content">
 <main>
 <h2>SOP-004 玉掛け作業手順書(作成中) </h2>
@@ -37,7 +37,7 @@
 <h3>定期見直し記録</h3>
 <table><tr><th>見直し日</th><th>結果</th><th>コメント</th><th>実施者</th></tr>
 <tr><td colspan="4" class="muted">記録なし</td></tr></table>
-<form method="post" action="#" onsubmit="return false" class="inline"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315">
+<form method="post" action="#" onsubmit="return false" class="inline"><input type="hidden" name="csrf" value="17cdd3e2e915cb0a0c885d1599ce7a84">
 見直し日<input type="date" name="reviewed_on" value="2026-11-07" max="2026-11-07" required>
 <select name="result"><option>変更なし</option><option>改訂が必要</option></select>
 <input type="text" name="comment" placeholder="コメント"> <button>見直しを記録</button></form>
@@ -45,25 +45,25 @@
 
 <h3>関連文書</h3>
 <ul><li class="muted">なし</li></ul>
-<form method="post" action="#" onsubmit="return false" class="inline"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315">
+<form method="post" action="#" onsubmit="return false" class="inline"><input type="hidden" name="csrf" value="17cdd3e2e915cb0a0c885d1599ce7a84">
 <input type="text" name="to_doc_no" placeholder="関連する文書番号" required><input type="text" name="note" placeholder="備考(様式・上位規程など)"><button>追加</button></form>
 
 
-<h3>使用する設備・保護具</h3>
+<h3>関連する設備・機器</h3>
 <ul><li class="muted">なし</li></ul>
-<form method="post" action="#" onsubmit="return false" class="inline"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315">
+<form method="post" action="#" onsubmit="return false" class="inline"><input type="hidden" name="csrf" value="17cdd3e2e915cb0a0c885d1599ce7a84">
 <select name="equipment_id"><option value="2">フルハーネス型墜落制止用器具</option><option value="1">酸素濃度計</option></select><button>紐付け</button></form>
 
 
 
 <h3>文書情報の変更・廃止</h3>
-<form method="post" action="#" onsubmit="return false" class="box"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315">
+<form method="post" action="#" onsubmit="return false" class="box"><input type="hidden" name="csrf" value="17cdd3e2e915cb0a0c885d1599ce7a84">
 <label>名称</label><input type="text" name="title" value="玉掛け作業手順書(作成中)" required>
 <label>分類</label><input type="text" name="category" value="安全作業">
 <label>部署</label><input type="text" name="department" value="施設部">
 <label>見直し周期(月)</label><input type="number" name="review_cycle_months" value="12" min="1" max="120">
 <p><button>更新</button></p></form>
-<form method="post" action="#" onsubmit="return false" class="box"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315">
+<form method="post" action="#" onsubmit="return false" class="box"><input type="hidden" name="csrf" value="17cdd3e2e915cb0a0c885d1599ce7a84">
 <input type="text" name="reason" placeholder="廃止理由(必須)" required><button>この文書を廃止する</button></form>
 
 </main>

@@ -3,14 +3,14 @@
 <title>文書管理システム</title><link rel="stylesheet" href="/static/style.css"></head><body>
 {% set p = request.url.path %}
 {% if user %}<div class="layout"><nav class="side">
-<div class="brand">文書管理<small>作業手順書・版管理</small></div>
+<div class="brand">文書管理<small>文書の版管理・承認</small></div>
 <a href="/" class="{{ 'on' if p=='/' }}">ホーム</a>
 <a href="/documents" class="{{ 'on' if p.startswith('/documents') or p.startswith('/revisions') }}">文書一覧</a>
 <a href="/tasks" class="{{ 'on' if p=='/tasks' }}">担当タスク</a>
 <a href="/acks" class="{{ 'on' if p=='/acks' }}">周知確認</a>
 {% if user.role in ('admin','author') %}<a href="/submit" class="{{ 'on' if p=='/submit' }}">新規申請</a>{% endif %}
 {% if user.role != 'viewer' %}<div class="sep">管理</div>
-<a href="/equipment" class="{{ 'on' if p=='/equipment' }}">設備・保護具</a>
+<a href="/equipment" class="{{ 'on' if p=='/equipment' }}">設備・機器台帳</a>
 <a href="/export" class="{{ 'on' if p.startswith('/export') }}">監査出力</a>{% endif %}
 {% if user.role in ('admin','approver','reviewer') %}<a href="/checks" class="{{ 'on' if p=='/checks' }}">整合性チェック</a>{% endif %}
 {% if user.role=='admin' %}<a href="/users" class="{{ 'on' if p=='/users' }}">アカウント</a><a href="/audit" class="{{ 'on' if p=='/audit' }}">操作ログ</a>{% endif %}

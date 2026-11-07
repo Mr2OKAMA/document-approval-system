@@ -1,6 +1,6 @@
 {% extends "base.html" %}{% block body %}
-<h2>設備・保護具台帳(酸欠計・墜落制止用器具など)</h2>
-<table><tr><th>名称</th><th>型式/製造番号</th><th>使用開始日</th><th>校正期限</th><th>関連手順書</th><th>校正履歴(直近5件)</th>{% if can_manage %}<th>操作</th>{% endif %}</tr>
+<h2>設備・機器台帳(測定器・保護具・検査機器など)</h2>
+<table><tr><th>名称</th><th>型式/製造番号</th><th>使用開始日</th><th>校正期限</th><th>関連文書</th><th>校正履歴(直近5件)</th>{% if can_manage %}<th>操作</th>{% endif %}</tr>
 {% for x in rows %}{% set e=x.e %}<tr {% if not e.active %}class="muted"{% endif %}><td>{{ e.name }}{% if not e.active %}(使用停止){% endif %}</td><td>{{ e.model }}<br>{{ e.serial_no }}</td><td>{{ e.in_use_since }}</td>
 <td>{{ e.calibration_due or '未記録' }} <span class="{{ 'ng' if x.state=='超過' else ('warn' if x.state=='間近') }}">{{ x.state if x.state!='OK' }}</span></td>
 <td>{% for d in x.docs %}<a href="/documents/{{ d.doc_no }}">{{ d.doc_no }}</a><br>{% endfor %}</td>

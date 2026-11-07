@@ -6,11 +6,11 @@
 <datalist id="docs">{% for d in docs %}<option value="{{ d.doc_no }}">{{ d.title }}</option>{% endfor %}</datalist>
 <fieldset><legend>新規文書のみ入力(既存文書は登録済みの内容を使用)</legend>
 <label>名称</label><input type="text" name="title">
-<label>分類</label><input type="text" name="category" list="cats"><datalist id="cats">{% for c in cats %}<option value="{{ c }}">{% endfor %}</datalist>
+<label>分類</label><input type="text" name="category" list="cats" placeholder="例: 規程 / 手順書 / 様式 / 図面 / 契約書 / 議事録"><datalist id="cats">{% for c in cats %}<option value="{{ c }}">{% endfor %}</datalist>
 <label>部署</label><input type="text" name="department" list="deps"><datalist id="deps">{% for c in deps %}<option value="{{ c }}">{% endfor %}</datalist>
 <label>見直し周期(月)</label><input type="number" name="review_cycle_months" value="12" min="1" max="120"></fieldset>
 <label>改訂内容</label><textarea name="change_summary" rows="3" required></textarea>
-<label>改訂理由(必須:災害・ヒヤリハット・法改正・リスクアセスメント結果など)</label><textarea name="change_reason" rows="3" required></textarea>
+<label>改訂理由(必須:新規制定・法改正・事故/ヒヤリハット・業務変更・誤記修正など)</label><textarea name="change_reason" rows="3" required></textarea>
 <label>適用開始日</label><input type="date" name="effective_date" value="{{ today() }}" required>
 <label>PDFファイル(正本・20MBまで)</label><input type="file" name="file" accept="application/pdf" required>
 <p><button>下書きを作成</button></p></form>{% endblock %}

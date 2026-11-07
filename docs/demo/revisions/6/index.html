@@ -3,20 +3,20 @@
 <title>文書管理システム</title><link rel="stylesheet" href="../../static/style.css"></head><body><div style="background:#fff3cd;border-bottom:1px solid #e0c36a;padding:8px 16px;font-size:13px">これは見た目確認用の<b>静的デモ</b>です(ダミーデータ・操作は動作しません)。</div>
 
 <div class="layout"><nav class="side">
-<div class="brand">文書管理<small>作業手順書・版管理</small></div>
+<div class="brand">文書管理<small>文書の版管理・承認</small></div>
 <a href="../../index.html" class="">ホーム</a>
 <a href="../../documents/index.html" class="on">文書一覧</a>
 <a href="../../tasks/index.html" class="">担当タスク</a>
 <a href="../../acks/index.html" class="">周知確認</a>
 <a href="../../submit/index.html" class="">新規申請</a>
 <div class="sep">管理</div>
-<a href="../../equipment/index.html" class="">設備・保護具</a>
+<a href="../../equipment/index.html" class="">設備・機器台帳</a>
 <a href="#" class="">監査出力</a>
 <a href="../../checks/index.html" class="">整合性チェック</a>
 <a href="../../users/index.html" class="">アカウント</a><a href="../../audit/index.html" class="">操作ログ</a>
 <div class="me">管理者 山田<br><span style="opacity:.7">管理者</span><br>
 <a href="#" style="padding:6px 0;border:0;display:inline">パスワード変更</a>
-<form method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><button>ログアウト</button></form></div>
+<form method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="17cdd3e2e915cb0a0c885d1599ce7a84"><button>ログアウト</button></form></div>
 </nav><div class="content">
 <main>
 <h2>SOP-004 玉掛け作業手順書(作成中) Rev.0 <span class="tag st-下書き">下書き</span></h2>
@@ -29,17 +29,17 @@ PDF:<a href="#" target="_blank">SOP-004.pdf</a> <span class="muted">SHA-256 8bfe
 </div>
 
 <h3>下書きの編集</h3>
-<form method="post" action="#" onsubmit="return false" enctype="multipart/form-data" class="box"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315">
+<form method="post" action="#" onsubmit="return false" enctype="multipart/form-data" class="box"><input type="hidden" name="csrf" value="17cdd3e2e915cb0a0c885d1599ce7a84">
 <label>改訂内容</label><textarea name="change_summary" rows="3" required>初版制定</textarea>
 <label>改訂理由</label><textarea name="change_reason" rows="3" required>クレーン作業の標準化</textarea>
 <label>適用開始日</label><input type="date" name="effective_date" value="2026-12-22" required>
 <label>PDFを差し替える場合のみ選択</label><input type="file" name="file" accept="application/pdf">
 <p><button>保存</button></p></form>
-<form method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315"><button>確認依頼(提出)</button></form>
+<form method="post" action="#" onsubmit="return false"><input type="hidden" name="csrf" value="17cdd3e2e915cb0a0c885d1599ce7a84"><button>確認依頼(提出)</button></form>
 
 
 
-<form method="post" action="#" onsubmit="return false" class="box"><input type="hidden" name="csrf" value="085a6a0fa5977bbc1a97856897e2d315">
+<form method="post" action="#" onsubmit="return false" class="box"><input type="hidden" name="csrf" value="17cdd3e2e915cb0a0c885d1599ce7a84">
 <input type="text" name="comment" placeholder="取下げ理由(必須)" required><button>この申請を取り下げる</button></form>
 
 <h3>確認・承認の経過</h3>

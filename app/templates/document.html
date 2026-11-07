@@ -33,7 +33,7 @@
 <input type="text" name="to_doc_no" placeholder="関連する文書番号" required><input type="text" name="note" placeholder="備考(様式・上位規程など)"><button>追加</button></form>{% endif %}
 
 {% if user.role!='viewer' %}
-<h3>使用する設備・保護具</h3>
+<h3>関連する設備・機器</h3>
 <ul>{% for e in equipment %}<li>{{ e.name }} {{ e.model }}(使用開始日 {{ e.in_use_since }}、校正期限 {{ e.calibration_due or '未記録' }})
 {% if user.role in ('admin','author','approver') %}<form class="inline" method="post" action="/documents/{{ doc.doc_no }}/equipment/{{ e.id }}/delete"><input type="hidden" name="csrf" value="{{ csrf }}"><button>解除</button></form>{% endif %}</li>
 {% else %}<li class="muted">なし</li>{% endfor %}</ul>
